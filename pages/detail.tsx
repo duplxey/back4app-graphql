@@ -3,15 +3,15 @@ import {Badge, Button, Card, CardBody, Container, Heading, HStack, Stack, Text, 
 import Link from "next/link";
 import {CheckIcon, CloseIcon} from "@chakra-ui/icons";
 
-const ListPage: NextPage = () => {
+const DetailPage: NextPage = () => {
   return (
     <>
       <Container maxWidth="container.lg">
         <HStack w="fill" justifyContent="space-between" mt={8} mb={4}>
           <Heading as="h1" size="lg">back4app-graphql</Heading>
-          <Link href="/add">
+          <Link href="/">
             <Button size="sm" colorScheme="blue">
-              Add task
+              Task list
             </Button>
           </Link>
         </HStack>
@@ -36,7 +36,8 @@ const ListPage: NextPage = () => {
                   <Badge>Category3</Badge>
                 </Stack>
                 <Stack direction="row" pt={2}>
-                  <Button size="sm" colorScheme="blue">View</Button>
+                  <Button size="sm" colorScheme="blue">Mark as done</Button>
+                  <Button size="sm" colorScheme="red">Delete</Button>
                 </Stack>
               </Stack>
             </CardBody>
@@ -47,4 +48,4 @@ const ListPage: NextPage = () => {
   );
 };
 
-export default ListPage;
+export default DetailPage;
