@@ -1,8 +1,6 @@
 import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
-
-import { extendTheme } from "@chakra-ui/react";
+import type {AppProps} from "next/app";
+import {ChakraProvider, extendTheme} from "@chakra-ui/react";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 
 export const theme = extendTheme({
