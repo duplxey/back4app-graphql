@@ -1,9 +1,23 @@
 import type {NextPage} from "next";
 import {Badge, Button, Card, CardBody, Container, Heading, HStack, Stack, Text, VStack} from "@chakra-ui/react";
 import Link from "next/link";
-import {CheckIcon, CloseIcon} from "@chakra-ui/icons";
+import {useRouter} from "next/router";
+import {gql} from "@apollo/client";
+
+const GET_TASK = gql`
+  query GetTask {
+    task(id: "") {
+      id
+      name
+      description
+    }
+  }
+`;
 
 const DetailPage: NextPage = () => {
+  const router = useRouter();
+  const {id} = router.query;
+
   return (
     <>
       <Container maxWidth="container.lg">

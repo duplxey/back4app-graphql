@@ -1,9 +1,49 @@
 import type {NextPage} from "next";
-import {Badge, Button, Card, CardBody, Container, Heading, HStack, Stack, Text, VStack} from "@chakra-ui/react";
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  Container,
+  Heading,
+  HStack,
+  Spinner,
+  Stack,
+  Text,
+  VStack
+} from "@chakra-ui/react";
 import Link from "next/link";
-import {CheckIcon, CloseIcon} from "@chakra-ui/icons";
+import {useQuery, gql} from "@apollo/client";
+
+const GET_TASKS = gql`
+  query GetTasks {
+    tasks {
+        count
+        edges {
+        node {
+            id
+            name
+            description
+            isDone
+            categories {
+              edges {
+                node {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+`;
 
 const ListPage: NextPage = () => {
+  const {loading, error, data} = useQuery(GET_TASKS);
+
+  if (error) return <p>Oops, something went wrong.</p>;
+
   return (
     <>
       <Container maxWidth="container.lg">
@@ -16,31 +56,40 @@ const ListPage: NextPage = () => {
           </Link>
         </HStack>
         <VStack spacing={4}>
-          <Card>
-            <CardBody>
-              <Stack direction="column">
-                <Heading as="h2" size="md">
-                  ✔️
-                  ❌
-                  Take out the trash
-                </Heading>
-                <Text>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur.
-                </Text>
-                <Stack direction="row">
-                  <Badge>Category1</Badge>
-                  <Badge>Category2</Badge>
-                  <Badge>Category3</Badge>
-                </Stack>
-                <Stack direction="row" pt={2}>
-                  <Button size="sm" colorScheme="blue">View</Button>
-                </Stack>
-              </Stack>
-            </CardBody>
-          </Card>
+          {loading ? (
+            <Spinner size="xl"/>
+          ) : (
+            <>
+              {data.tasks.edges.map((edge) => {
+                let task = edge.node;
+                return (
+                  <Card key={task.id} w="100%">
+                    <CardBody>
+                      <Stack direction="column">
+                        <Heading as="h2" size="md">
+                          {task.isDone ? "✔️" : "❌"}
+                          {task.name}
+                        </Heading>
+                        <Text>
+                          {task.description}
+                        </Text>
+                        {task.categories.edges && (
+                          <Stack direction="row">
+                            {task.categories.edges.map((edge, index) => (
+                              <Badge key={index}>{edge.node.name}</Badge>
+                            ))}
+                          </Stack>
+                        )}
+                        <Stack direction="row" pt={2}>
+                          <Button size="sm" colorScheme="blue">View</Button>
+                        </Stack>
+                      </Stack>
+                    </CardBody>
+                  </Card>
+                );
+              })}
+            </>
+          )}
         </VStack>
       </Container>
     </>
