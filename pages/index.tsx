@@ -41,6 +41,7 @@ const DELETE_TASK = gql`
 `;
 
 const ListPage: NextPage = () => {
+
   const {loading, error, data, refetch} = useQuery(GET_TASKS, {
     fetchPolicy: "no-cache",
   });

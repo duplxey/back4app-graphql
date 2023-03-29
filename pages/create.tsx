@@ -34,6 +34,7 @@ const CREATE_TASK = gql`
 `;
 
 const CreatePage: NextPage = () => {
+
   const router = useRouter();
 
   const [name, setName] = useState("");
