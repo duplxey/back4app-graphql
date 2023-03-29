@@ -1,7 +1,7 @@
 import type {NextPage} from "next";
 import {Button, Card, CardBody, Container, Heading, HStack, Spinner, Stack, Text, VStack} from "@chakra-ui/react";
 import Link from "next/link";
-import {gql, useQuery} from "@apollo/client";
+import {gql, useMutation, useQuery} from "@apollo/client";
 
 const GET_TASKS = gql`
   query GetTasks {
@@ -19,10 +19,62 @@ const GET_TASKS = gql`
   }
 `;
 
+const UPDATE_TASK = gql`
+  mutation UpdateTask($id: ID!, $isDone: Boolean!) {
+    updateTask(input: { id: $id, fields: { isDone: $isDone } }) {
+      task {
+        isDone
+        updatedAt
+      }
+    }
+  }
+`;
+
+const DELETE_TASK = gql`
+  mutation DeleteTask($id: ID!) {
+    deleteTask(input: { id: $id }) {
+      task {
+        id
+      }
+    }
+  }
+`;
+
 const ListPage: NextPage = () => {
-  const {loading, error, data} = useQuery(GET_TASKS, {
+  const {loading, error, data, refetch} = useQuery(GET_TASKS, {
     fetchPolicy: "no-cache",
   });
+  const [deleteTask] = useMutation(DELETE_TASK);
+  const [updateTask] = useMutation(UPDATE_TASK);
+
+  const handleMarkAsDone = async (id: string, isDone: boolean) => {
+    try {
+      const updateTaskResponse = await updateTask({
+        variables: {
+          id: id,
+          isDone: !isDone,
+        }
+      });
+      console.debug(updateTaskResponse);
+      refetch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const deleteTaskResponse = await deleteTask({
+        variables: {
+          id: id
+        },
+      });
+      console.debug(deleteTaskResponse);
+      refetch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (error) return <p>Oops, something went wrong.</p>;
 
@@ -56,9 +108,12 @@ const ListPage: NextPage = () => {
                           {task.description}
                         </Text>
                         <Stack direction="row" pt={2}>
-                          <Link href={"/" + task.id}>
-                            <Button size="sm" colorScheme="blue">View</Button>
-                          </Link>
+                          <Button size="sm" colorScheme="blue" onClick={() => handleMarkAsDone(task.id, task.isDone)}>
+                            Toggle done
+                          </Button>
+                          <Button size="sm" colorScheme="red" onClick={() => handleDelete(task.id)}>
+                            Delete
+                          </Button>
                         </Stack>
                       </Stack>
                     </CardBody>

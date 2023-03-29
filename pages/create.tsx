@@ -23,11 +23,7 @@ const CREATE_TASK = gql`
   mutation CreateTask($name: String!, $description: String, $isDone: Boolean!) {
     createTask(
       input: {
-        fields: {
-          name: $name
-          description: $description
-          isDone: $isDone
-        }
+        fields: { name: $name, description: $description, isDone: $isDone }
       }
     ) {
       task {
@@ -58,7 +54,7 @@ const CreatePage: NextPage = () => {
     createTask({
       variables: {name: name, description: description, isDone: isDone}
     }).then(response => {
-      router.push("/" + response.data.createTask.task.id);
+      router.push("/");
     });
   };
 
