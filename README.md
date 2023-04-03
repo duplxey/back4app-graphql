@@ -2,7 +2,7 @@
 
 This is an example project that demonstrates how to use Next.js with Back4app GraphQL API.
 
-For more information check out the [article](#).
+For more information check out the [article](https://blog.back4app.com/how-to-build-a-graphql-api/).
 
 ## Development setup
 
